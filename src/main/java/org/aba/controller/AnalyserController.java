@@ -149,7 +149,8 @@ public class AnalyserController
         try
         {
             FileOutputStream out = new FileOutputStream(
-                    new File(getPath() + "compteAnaliser_" + BaseUtils.getDateFormatteddd_MM_YYYY(new Date()) + ".xlsx"));
+                    new File(getPath() + "compteAnaliser_"
+                                     + BaseUtils.getDateFormatteddd_MM_YYYY(new Date()) + ".xlsx"));
 
             wb.write(out);
             out.close();
@@ -169,8 +170,8 @@ public class AnalyserController
         Cell cell = row.createCell(0);
         cell.setCellStyle(cellStyleTitle);
         cell.setCellValue("Analyse principale du "
-                + BaseUtils.getDateFormattedddPointMMPointYYYY(globalBudgetDataDto.getFrom())
-                + " au " + BaseUtils.getDateFormattedddPointMMPointYYYY(globalBudgetDataDto.getTo()));
+                                  + BaseUtils.getDateFormattedddPointMMPointYYYY(globalBudgetDataDto.getFrom())
+                                  + " au " + BaseUtils.getDateFormattedddPointMMPointYYYY(globalBudgetDataDto.getTo()));
 
         row = sheet.createRow(rowNb++);
         row = sheet.createRow(rowNb++);
@@ -239,7 +240,7 @@ public class AnalyserController
         Cell cell = row.createCell(0);
         cell.setCellStyle(cellStyleTitle);
         cell.setCellValue("Detail du " + BaseUtils.getDateFormattedddPointMMPointYYYY(globalBudgetDataDto.getFrom())
-                + " au " + BaseUtils.getDateFormattedddPointMMPointYYYY(globalBudgetDataDto.getTo()));
+                                  + " au " + BaseUtils.getDateFormattedddPointMMPointYYYY(globalBudgetDataDto.getTo()));
 
         cellNb = 0;
         row = sheet.createRow(rowNb++);

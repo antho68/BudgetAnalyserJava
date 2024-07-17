@@ -10,8 +10,8 @@ public class Main
 
         try
         {
-            //String path = "/Users/aba/Downloads/";
-            String path = "C:\\temp\\";
+            String path = "/Users/aba/Downloads/";
+            //String path = "C:\\temp\\";
 
             AnalyserController controller = new AnalyserController(path);
             controller.doWork();
