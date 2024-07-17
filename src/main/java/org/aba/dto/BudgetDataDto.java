@@ -19,6 +19,8 @@ public class BudgetDataDto
     public static String UF_RIO = "Rio";
     public static String UF_SAVE = "Epargne";
     public static String UF_INSURANCE = "Assurance";
+    public static String[] ALL_UF = {UF_HOUSE, UF_ANTHO, UF_MALO, UF_NOHAN
+            , UF_RIO, UF_SAVE, UF_INSURANCE};
 
     String description = "";
     String paymentType = "";
@@ -82,15 +84,19 @@ public class BudgetDataDto
                     || getDescription().contains("PRLV SEPA ELECTRICITE DE FRANCE Z014219594569")
                     || getDescription().contains("WALDIGHOFEN SARL ECOSTATION")
                     || getDescription().contains("VIR SEPA NETFLIX CHRISTOPHE CG3V24187L237350")
-                    || getDescription().contains("VIR VIREMENT REMPLA. REGINE CG3V24187L237351"))
+                    || getDescription().contains("ECH PRET CAP+IN 03130 207942 02")
+                    || getDescription().contains("PRLV SEPA COMPAGNIE GENERALE DE CGL/T007111713/111870424 C242473736")
+                    || getDescription().contains("F COTIS EUC.SERENITE")
+                    || getDescription().contains("PRLV SEPA DIRECTION GENERALE DE 5P087000024G0510876110 PRELEVEMENT A LA SOURCE REVENUS 2024")
+                    || getDescription().contains("PRLV SEPA DIRECTION GENERALE DE 1E067000068033M368025499680 680333022153036413 111 MENM368025499680033 IMPOT"))
             {
                 setUsedFor(UF_HOUSE);
             }
-            else if (getDescription().equals("ASSURANCE ANIMAUX DE COMPAGNIE RMS24179266041415GI ASSURANCE ANIMAUX DE COMPAGNIE S11041640"))
+            else if (getDescription().contains("ASSURANCE ANIMAUX DE COMPAGNIE RMS24179266041415GI ASSURANCE ANIMAUX DE COMPAGNIE S11041640"))
             {
                 setUsedFor(UF_RIO);
             }
-            else if (getDescription().equals("PRLV SEPA ORANGE SA 166241758995465173919119913550 VOTRE ABONNEMENT MOBILE: 06XXXXX232")
+            else if (getDescription().contains("PRLV SEPA ORANGE SA 166241758995465173919119913550 VOTRE ABONNEMENT MOBILE: 06XXXXX232")
                     || getDescription().contains("VIR ARGENT POUR LE MOIS ANTHO")
                     || getDescription().contains("PRLV SEPA URSSAF FRANCHE-COMTE-")
                     || getDescription().contains("PRLV SEPA GIEPS-GIE DE PREVOYAN PREL.APRS 072024 6902R02644TP"))
@@ -118,7 +124,8 @@ public class BudgetDataDto
             }
             else if (getDescription().contains("PRLV SEPA ADIS AGIPI EPARGNE RETRAITE 0010426526 0010426526")
                     || getDescription().contains("PRLV SEPA ADIS AGIPI EPARGNE RETRAITE 0010426457 0010426457")
-                    || getDescription().contains("VIR PLACEMENT POUR NOHAN CG3V24187L254521"))
+                    || getDescription().contains("VIR PLACEMENT POUR NOHAN CG3V24187L254521")
+                    || getDescription().contains("VIR VIREMENT REMPLA. REGINE CG3V24187L237351"))
             {
                 setUsedFor(UF_SAVE);
             }
@@ -253,6 +260,14 @@ public class BudgetDataDto
         {
             return "Assu. Santé Malo";
         }
+        else if (recap.contains("PRLV SEPA ADIS AGIPI PREVOYANCE 0070741036 0070741036"))
+        {
+            return "Assu. Prêt Maison Antho";
+        }
+        else if (recap.contains("PRLV SEPA ADIS AGIPI PREVOYANCE 0070746891 0070746891"))
+        {
+            return "Assu. Prêt Maison Malo";
+        }
         else if (recap.contains("HUNDSBACH SUMUP *CHEZ MAX"))
         {
             return "Pizza MAX";
@@ -277,7 +292,18 @@ public class BudgetDataDto
         {
             return "Ancien VIR Régine";
         }
-
+        else if (recap.contains("F COTIS EUC.SERENITE"))
+        {
+            return "Frais tenu de compte";
+        }
+        else if (recap.contains("PRLV SEPA DIRECTION GENERALE DE 5P087000024G0510876110 PRELEVEMENT A LA SOURCE REVENUS 2024"))
+        {
+            return "Impot sur revenu";
+        }
+        else if (recap.contains("PRLV SEPA DIRECTION GENERALE DE 1E067000068033M368025499680 680333022153036413 111 MENM368025499680033 IMPOT"))
+        {
+            return "Impot foncier";
+        }
 
         recap = recap.replace("PRLV SEPA ", "");
         recap = recap.replace("PAIEMENT CB ", "");

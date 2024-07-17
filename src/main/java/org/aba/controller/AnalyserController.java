@@ -20,8 +20,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 public class AnalyserController
 {
@@ -73,8 +75,6 @@ public class AnalyserController
 
             if (CellType.NUMERIC.equals(dateCell.getCellType()))
             {
-                //System.out.print("Row:" + row.getRowNum() + " - ");
-
                 BudgetDataDto budgetDataDto = new BudgetDataDto();
                 globalBudgetDataDto.getBudgetDataDtos().add(budgetDataDto);
 
@@ -89,10 +89,7 @@ public class AnalyserController
                 {
                     budgetDataDto.setAmount(creditCell.getNumericCellValue());
                 }
-
-                //System.out.println("BudgetDataDto: " + budgetDataDto.getInfos());
             }
-
         }
 
         return globalBudgetDataDto;
@@ -127,8 +124,6 @@ public class AnalyserController
 
             budgetDataDto.initPaymentType();
             budgetDataDto.initUsedFor();
-
-
         }
 
         printData(globalBudgetDataDto);
@@ -144,6 +139,12 @@ public class AnalyserController
 
         Sheet detailSheet = wb.createSheet("Detail");
         printDetailSheet(detailSheet, globalBudgetDataDto);
+
+        for (String useFor : BudgetDataDto.ALL_UF)
+        {
+            Sheet useForSheet = wb.createSheet(useFor);
+            printUseForSheet(useForSheet, globalBudgetDataDto, useFor);
+        }
 
         try
         {
@@ -194,6 +195,36 @@ public class AnalyserController
         cell = row.createCell(cellNb);
         cell.setCellValue(globalBudgetDataDto.getTotalOutput() * -1);
         cell.setCellStyle(cellStyleRed);
+
+        row = sheet.createRow(rowNb++);
+        for (String useFor : BudgetDataDto.ALL_UF)
+        {
+            row = sheet.createRow(rowNb++);
+            cellNb = 0;
+            cell = row.createCell(cellNb);
+            sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), cellNb, cellNb + 1));
+            cellNb += 2;
+            cell.setCellValue(useFor);
+
+            cell = row.createCell(cellNb);
+            Collection<BudgetDataDto> dtos = globalBudgetDataDto.getBudgetDataDtos().stream()
+                    .filter(d -> useFor.equals(d.getUsedFor()) && d.getAmount() < 0.0)
+                    .collect(Collectors.toList());
+            cell.setCellValue(dtos.stream().mapToDouble(BudgetDataDto::getAmount).sum());
+        }
+
+        row = sheet.createRow(rowNb++);
+        cellNb = 0;
+        cell = row.createCell(cellNb);
+        sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), cellNb, cellNb + 1));
+        cellNb += 2;
+        cell.setCellValue("Autres");
+
+        cell = row.createCell(cellNb);
+        Collection<BudgetDataDto> dtos = globalBudgetDataDto.getBudgetDataDtos().stream()
+                .filter(d -> "".equals(d.getUsedFor()) && d.getAmount() < 0.0)
+                .collect(Collectors.toList());
+        cell.setCellValue(dtos.stream().mapToDouble(BudgetDataDto::getAmount).sum());
     }
 
     private void printDetailSheet(Sheet sheet, GlobalBudgetDataDto globalBudgetDataDto)
@@ -239,36 +270,82 @@ public class AnalyserController
 
         for (BudgetDataDto budgetDataDto : globalBudgetDataDto.getBudgetDataDtos())
         {
-            cellNb = 0;
             row = sheet.createRow(rowNb++);
+            printBudgetDataDtoRow(row, budgetDataDto);
+        }
+    }
 
-            cell = row.createCell(cellNb++);
-            cell.setCellValue(BaseUtils.getDateFormattedddPointMMPointYYYY(budgetDataDto.getDate()));
+    private void printUseForSheet(Sheet sheet, GlobalBudgetDataDto globalBudgetDataDto, String useFor)
+    {
+        initDetailSheetWidths(sheet);
 
-            cell = row.createCell(cellNb++);
-            cell.setCellValue(budgetDataDto.getDescriptionRecap());
+        Collection<BudgetDataDto> dtos = globalBudgetDataDto.getBudgetDataDtos().stream()
+                .filter(d -> useFor.equals(d.getUsedFor()) && d.getAmount() < 0.0)
+                .collect(Collectors.toList());
 
-            cell = row.createCell(cellNb++);
-            cell.setCellValue(budgetDataDto.getAmount());
-            if (budgetDataDto.getAmount() < 0.0)
-            {
-                cell.setCellStyle(cellStyleRed);
-            }
-            else
-            {
-                cell.setCellStyle(cellStyleGreen);
-            }
+        int rowNb = 0;
+        int cellNb = 0;
+        Row row = sheet.createRow(rowNb++);
 
-            cell = row.createCell(cellNb++);
-            cell.setCellValue(budgetDataDto.getPaymentType());
+        Cell cell = row.createCell(cellNb++);
+        cell.setCellValue("Date");
+        cell.setCellStyle(cellStyleBold);
 
-            cell = row.createCell(cellNb++);
-            cell.setCellValue(budgetDataDto.getUsedFor());
+        cell = row.createCell(cellNb++);
+        cell.setCellValue("Description rapide");
+        cell.setCellStyle(cellStyleBold);
 
-            cell = row.createCell(cellNb++);
-            cell.setCellValue(budgetDataDto.getDescription());
+        cell = row.createCell(cellNb++);
+        cell.setCellValue("Valeur");
+        cell.setCellStyle(cellStyleBold);
+
+        cell = row.createCell(cellNb++);
+        cell.setCellValue("Type");
+        cell.setCellStyle(cellStyleBold);
+
+        cell = row.createCell(cellNb++);
+        cell.setCellValue("Pour");
+        cell.setCellStyle(cellStyleBold);
+
+        cell = row.createCell(cellNb++);
+        cell.setCellValue("Desciption complete");
+        cell.setCellStyle(cellStyleBold);
+
+        for (BudgetDataDto budgetDataDto : dtos)
+        {
+            row = sheet.createRow(rowNb++);
+            printBudgetDataDtoRow(row, budgetDataDto);
+        }
+    }
+
+    private void printBudgetDataDtoRow(Row row, BudgetDataDto budgetDataDto)
+    {
+        int cellNb = 0;
+        Cell cell = row.createCell(cellNb++);
+        cell.setCellValue(BaseUtils.getDateFormattedddPointMMPointYYYY(budgetDataDto.getDate()));
+
+        cell = row.createCell(cellNb++);
+        cell.setCellValue(budgetDataDto.getDescriptionRecap());
+
+        cell = row.createCell(cellNb++);
+        cell.setCellValue(budgetDataDto.getAmount());
+        if (budgetDataDto.getAmount() < 0.0)
+        {
+            cell.setCellStyle(cellStyleRed);
+        }
+        else
+        {
+            cell.setCellStyle(cellStyleGreen);
         }
 
+        cell = row.createCell(cellNb++);
+        cell.setCellValue(budgetDataDto.getPaymentType());
+
+        cell = row.createCell(cellNb++);
+        cell.setCellValue(budgetDataDto.getUsedFor());
+
+        cell = row.createCell(cellNb++);
+        cell.setCellValue(budgetDataDto.getDescription());
     }
 
     private void initStyles(XSSFWorkbook wb)
