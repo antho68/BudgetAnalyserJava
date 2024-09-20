@@ -10,8 +10,17 @@ public class Main
 
         try
         {
-            String path = "/Users/aba/Downloads/";
-            //String path = "C:\\temp\\";
+            String os = System.getProperty("os.name");
+            String path = "";
+
+            if (os.contains("Windows"))
+            {
+                path = "C:\\temp\\";
+            }
+            else
+            {
+                path = "/Users/aba/Downloads/";
+            }
 
             AnalyserController controller = new AnalyserController(path);
             controller.doWork();

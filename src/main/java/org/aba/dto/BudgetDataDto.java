@@ -79,7 +79,6 @@ public class BudgetDataDto
                 || getDescription().contains("PRLV SEPA FREE TELECOM FHD-1303937822 FREE HAUTDEBIT 1303937822")
                 || getDescription().contains("PRLV SEPA ELECTRICITE DE FRANCE Z014219594569")
                 || getDescription().contains("MONTBELIARD PETRO BELMONT")
-                || getDescription().contains("PRLV SEPA ELECTRICITE DE FRANCE Z014219594569")
                 || getDescription().contains("WALDIGHOFEN SARL ECOSTATION")
                 || getDescription().contains("VIR SEPA NETFLIX CHRISTOPHE CG3V24187L237350")
                 || getDescription().contains("ECH PRET CAP+IN 03130 207942 02")
@@ -88,7 +87,12 @@ public class BudgetDataDto
                 || getDescription().contains(
                 "PRLV SEPA DIRECTION GENERALE DE 5P087000024G0510876110 PRELEVEMENT A LA SOURCE REVENUS 2024")
                 || getDescription().contains(
-                "PRLV SEPA DIRECTION GENERALE DE 1E067000068033M368025499680 680333022153036413 111 MENM368025499680033 IMPOT"))
+                "PRLV SEPA DIRECTION GENERALE DE 1E067000068033M368025499680 680333022153036413 111 MENM368025499680033 IMPOT")
+                || getDescription().contains("ALTKIRCH E.LECLERC")
+                || getDescription().contains("HUNDSBACH SUMUP *CHEZ MAX")
+                || getDescription().contains("HIRSINGUE DRIVE E.LECLERC")
+                || getDescription().contains("HIRSINGUE LECLERC")
+                || getDescription().contains("ALTKIRCH LIDL ALTK"))
         {
             setUsedFor(UF_HOUSE);
         }
@@ -112,7 +116,8 @@ public class BudgetDataDto
         {
             setUsedFor(UF_MALO);
         }
-        else if (getDescription().contains("CENTRE PAJEMPLOI"))
+        else if (getDescription().contains("CENTRE PAJEMPLOI")
+                || getDescription().contains("LUXEMBOURG PAYPAL *ENMOINS"))
         {
             setUsedFor(UF_NOHAN);
         }
@@ -120,14 +125,18 @@ public class BudgetDataDto
                 || getDescription().contains("PRLV SEPA AXA I0000787146750 I0000787146750-CONTRAT0000021700724704")
                 || getDescription().contains("PRLV SEPA AXA I0000787146780 I0000787146780-CONTRAT0000021700719804")
                 || getDescription().contains("PRLV SEPA AXA I0000787146866 I0000787146866-CONTRAT0000021681176204")
-                || getDescription().contains("PLAN ASSUR VIE OY000014652865 2418799 OY000014652865"))
+                || getDescription().contains("PLAN ASSUR VIE OY000014652865 2418799 OY000014652865")
+                || getDescription().contains("PRLV SEPA AXA FRANCE VIE SA I0000785094920 I0000785094920-CONTRAT0000021703135704")
+                || getDescription().contains("PRLV SEPA ADIS AGIPI PREVOYANCE 0070746891 0070746891")
+                || getDescription().contains("PRLV SEPA ADIS AGIPI PREVOYANCE 0070741036 0070741036"))
         {
             setUsedFor(UF_INSURANCE);
         }
         else if (getDescription().contains("PRLV SEPA ADIS AGIPI EPARGNE RETRAITE 0010426526 0010426526")
                 || getDescription().contains("PRLV SEPA ADIS AGIPI EPARGNE RETRAITE 0010426457 0010426457")
                 || getDescription().contains("VIR PLACEMENT POUR NOHAN CG3V24187L254521")
-                || getDescription().contains("VIR VIREMENT REMPLA. REGINE CG3V24187L237351"))
+                || getDescription().contains("VIR VIREMENT REMPLA. REGINE CG3V24187L237351")
+                || getDescription().contains("PLAN ASSUR VIE OY000014539275 2418499 OY000014539275"))
         {
             setUsedFor(UF_SAVE);
         }
@@ -308,6 +317,10 @@ public class BudgetDataDto
                 "PRLV SEPA DIRECTION GENERALE DE 1E067000068033M368025499680 680333022153036413 111 MENM368025499680033 IMPOT"))
         {
             return "Impot foncier";
+        }
+        else if (recap.contains("PLAN ASSUR VIE OY000014539275 2418499 OY000014539275"))
+        {
+            return "Assurance Vie Credit mutuel";
         }
 
         recap = recap.replace("PRLV SEPA ", "");

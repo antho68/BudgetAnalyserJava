@@ -146,6 +146,9 @@ public class AnalyserController
             printUseForSheet(useForSheet, globalBudgetDataDto, useFor);
         }
 
+        Sheet useForSheet = wb.createSheet("Autres");
+        printUseForSheet(useForSheet, globalBudgetDataDto, "");
+
         try
         {
             FileOutputStream out = new FileOutputStream(
@@ -166,7 +169,7 @@ public class AnalyserController
         int rowNb = 0;
         Row row = sheet.createRow(rowNb++);
 
-        sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 0, 5));
+        sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 0, 10));
         Cell cell = row.createCell(0);
         cell.setCellStyle(cellStyleTitle);
         cell.setCellValue("Analyse principale du "
